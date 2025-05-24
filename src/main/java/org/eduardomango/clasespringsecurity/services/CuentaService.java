@@ -17,6 +17,17 @@ public class CuentaService {
         this.cuentaRepository = cuentaRepository;
     }
 
+    public List<CuentaDTO> findAll(){
+        return cuentaRepository.findAll()
+                .stream()
+                .map(c -> CuentaDTO.builder()
+                        .tipo(c.getTipo())
+                        .saldo(c.getSaldo())
+                        .numero(c.getNumero())
+                        .build())
+                .toList();
+    }
+
     public CuentaDTO save(CuentaEntity entity) {
         CuentaEntity saved =  cuentaRepository.save(entity);
 

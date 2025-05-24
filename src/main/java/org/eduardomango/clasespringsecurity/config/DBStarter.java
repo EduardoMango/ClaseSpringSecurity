@@ -7,7 +7,10 @@ import org.eduardomango.clasespringsecurity.model.enums.EstadoCivil;
 import org.eduardomango.clasespringsecurity.model.enums.TipoCuenta;
 import org.eduardomango.clasespringsecurity.repositories.CuentaRepository;
 import org.eduardomango.clasespringsecurity.repositories.UserRepository;
+import org.eduardomango.clasespringsecurity.security.entities.CredentialsEntity;
+import org.eduardomango.clasespringsecurity.security.repositories.CredentialsRepository;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -18,10 +21,14 @@ public class DBStarter {
 
     private final CuentaRepository cuentaRepository;
     private final UserRepository userRepository;
+    private final CredentialsRepository credentialsRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public DBStarter(CuentaRepository cuentaRepository, UserRepository userRepository) {
+    public DBStarter(CuentaRepository cuentaRepository, UserRepository userRepository, CredentialsRepository credentialsRepository, PasswordEncoder passwordEncoder) {
         this.cuentaRepository = cuentaRepository;
         this.userRepository = userRepository;
+        this.credentialsRepository = credentialsRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostConstruct
@@ -54,9 +61,16 @@ public class DBStarter {
                     .cuit(cuit)
                     .estadoCivil(estadoCivil)
                     .build();
+            user.setCredentials(CredentialsEntity.builder().email(email).password(passwordEncoder.encode("password")).build());
             users.add(user);
-            System.out.println("Created User: " + user.getNombre() + " " + user.getApellido() + " (DNI: " + user.getDni() + ")");
+
+            System.out.println("Created User: " + user);
         }
+
+        CredentialsEntity credentialsEntity = CredentialsEntity.builder()
+                .email("usuario@usuario.com")
+                .password("password").build();
+
 
         // Create 25 accounts, distributing them among the 15 users
         UserEntity[] userArray = users.toArray(new UserEntity[0]);
@@ -72,11 +86,8 @@ public class DBStarter {
                     .build();
             accounts.add(cuenta);
 
-
-            System.out.println("Created Account: " + cuenta.getNumero() + " for User: " + randomUser.getNombre() + " " + randomUser.getApellido());
         }
 
-        // Now you would typically persist these entities using your repositories
         userRepository.saveAll(users);
         cuentaRepository.saveAll(accounts);
     }

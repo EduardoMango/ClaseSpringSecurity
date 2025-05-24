@@ -27,4 +27,9 @@ public class CuentaController {
         return ResponseEntity.ok(cuentaService.findAllByUserId(dni));
     }
 
+    @GetMapping
+    public ResponseEntity<List<CuentaDTO>> findAll(){
+        return ResponseEntity.ok(cuentaService.findAll());
+    }
+
 }

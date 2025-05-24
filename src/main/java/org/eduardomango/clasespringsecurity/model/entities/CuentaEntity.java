@@ -1,6 +1,5 @@
 package org.eduardomango.clasespringsecurity.model.entities;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
 import lombok.*;
 import org.eduardomango.clasespringsecurity.model.enums.TipoCuenta;
