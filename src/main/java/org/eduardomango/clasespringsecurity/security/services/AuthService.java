@@ -20,6 +20,7 @@ public class AuthService {
         this.authenticationManager = authenticationManager;
     }
 
+    //Utiliza la clase AuthenticationManager para autenticar el usuario.
     public UserDetails authenticate(AuthRequest input) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

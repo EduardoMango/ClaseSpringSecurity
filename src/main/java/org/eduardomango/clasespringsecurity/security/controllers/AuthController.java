@@ -25,7 +25,6 @@ public class AuthController {
 
     @PostMapping()
     public ResponseEntity<AuthResponse> authenticateUser(@RequestBody AuthRequest authRequest){
-        System.out.println("hola");
         UserDetails user = authService.authenticate(authRequest);
         System.out.println(user);
         String token = jwtService.generateToken(user);
