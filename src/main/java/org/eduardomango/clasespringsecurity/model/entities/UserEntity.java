@@ -28,7 +28,7 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private EstadoCivil estadoCivil;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "usuario")
     private CredentialsEntity credentials;
 
     @OneToMany(mappedBy = "usuario")

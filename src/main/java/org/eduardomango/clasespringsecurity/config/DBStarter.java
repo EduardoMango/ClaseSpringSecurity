@@ -62,13 +62,9 @@ public class DBStarter {
                     .cuit(cuit)
                     .estadoCivil(estadoCivil)
                     .build();
+            user.setCredentials(CredentialsEntity.builder().email(email).password(passwordEncoder.encode("password")).build());
             users.add(user);
 
-            CredentialsEntity credentialsEntity = CredentialsEntity.builder()
-                    .email(email)
-                    .password(passwordEncoder.encode("password"))
-                    .user(user)
-                    .build();
 
             System.out.println("Created User: " + user);
         }

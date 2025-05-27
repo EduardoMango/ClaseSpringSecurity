@@ -28,9 +28,9 @@ public class CredentialsEntity implements UserDetails {
     private String password;
 
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+    @OneToOne
+    @JoinColumn(name = "usuario_id", referencedColumnName = "dni", unique = true)
+    private UserEntity usuario;
 
     @ManyToMany(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
     @JoinTable(
@@ -50,11 +50,16 @@ public class CredentialsEntity implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return email;
+        return this.email;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

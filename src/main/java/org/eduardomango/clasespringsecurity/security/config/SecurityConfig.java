@@ -1,6 +1,7 @@
 package org.eduardomango.clasespringsecurity.security.config;
 
 import org.eduardomango.clasespringsecurity.security.filters.JwtAuthenticationFilter;
+import org.eduardomango.clasespringsecurity.security.filters.RestAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,9 +22,11 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, RestAuthenticationEntryPoint restAuthenticationEntryPoint) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
     }
 
     @Bean
@@ -43,9 +46,9 @@ public class SecurityConfig {
             Exception {
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/api/**").hasRole("USER")
-                        .requestMatchers(HttpMethod.GET, "/admin/users").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/admin/users").hasAuthority("ADMIN_CREATE_USER")
+//                        .requestMatchers("/api/**").hasRole("USER")
+//                        .requestMatchers(HttpMethod.GET, "/admin/users").hasRole("ADMIN")
+//                        .requestMatchers(HttpMethod.POST, "/admin/users").hasAuthority("ADMIN_CREATE_USER")
                         .anyRequest().authenticated())
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
@@ -55,7 +58,9 @@ public class SecurityConfig {
                 .sessionManagement(manager ->
                         manager.sessionCreationPolicy(STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class);
+                        UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(e ->
+                        e.authenticationEntryPoint(restAuthenticationEntryPoint));
         return http.build();
     }
 }
