@@ -3,6 +3,7 @@ package org.eduardomango.clasespringsecurity.model.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.eduardomango.clasespringsecurity.model.enums.EstadoCivil;
+import org.eduardomango.clasespringsecurity.security.model.entities.CredentialsEntity;
 
 import java.util.Set;
 
@@ -26,6 +27,9 @@ public class UserEntity {
 
     @Enumerated(EnumType.STRING)
     private EstadoCivil estadoCivil;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private CredentialsEntity credentials;
 
     @OneToMany(mappedBy = "usuario")
     @ToString.Exclude

@@ -28,7 +28,8 @@ public class CredentialsEntity implements UserDetails {
     private String password;
 
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private UserEntity user;
 
     @ManyToMany(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
