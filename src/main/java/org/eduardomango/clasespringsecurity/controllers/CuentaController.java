@@ -21,10 +21,10 @@ public class CuentaController {
         this.cuentaService = cuentaService;
     }
 
-    @GetMapping("/{dni}")
+    @GetMapping()
     public ResponseEntity<List<CuentaDTO>> findAllByUserId(@PathVariable String dni){
         System.out.println("Retrieving cuentas for dni " + dni);
-        return ResponseEntity.ok(cuentaService.findAllByUserId(dni));
+        return ResponseEntity.ok(cuentaService.findAll());
     }
 
 }

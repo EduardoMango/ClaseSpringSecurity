@@ -55,4 +55,15 @@ public class CuentaService {
                 .toList();
     }
 
+    public List<CuentaDTO> findAll() {
+        return cuentaRepository.findAll()
+                .stream()
+                .map(c -> CuentaDTO.builder()
+                        .tipo(c.getTipo())
+                        .saldo(c.getSaldo())
+                        .numero(c.getNumero())
+                        .build())
+                .toList();
+    }
+
 }
