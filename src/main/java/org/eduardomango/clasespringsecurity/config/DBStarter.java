@@ -9,6 +9,7 @@ import org.eduardomango.clasespringsecurity.repositories.CuentaRepository;
 import org.eduardomango.clasespringsecurity.repositories.UserRepository;
 import org.eduardomango.clasespringsecurity.security.entities.CredentialsEntity;
 import org.eduardomango.clasespringsecurity.security.repositories.CredentialsRepository;
+import org.eduardomango.clasespringsecurity.security.services.JwtService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -23,12 +24,14 @@ public class DBStarter {
     private final UserRepository userRepository;
     private final CredentialsRepository credentialsRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public DBStarter(CuentaRepository cuentaRepository, UserRepository userRepository, CredentialsRepository credentialsRepository, PasswordEncoder passwordEncoder) {
+    public DBStarter(CuentaRepository cuentaRepository, UserRepository userRepository, CredentialsRepository credentialsRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.cuentaRepository = cuentaRepository;
         this.userRepository = userRepository;
         this.credentialsRepository = credentialsRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     @PostConstruct
@@ -62,6 +65,7 @@ public class DBStarter {
                     .estadoCivil(estadoCivil)
                     .build();
             user.setCredentials(CredentialsEntity.builder().email(email).password(passwordEncoder.encode("password")).build());
+            user.getCredentials().setRefreshToken(jwtService.generateRefreshToken(user.getCredentials()));
             users.add(user);
 
             System.out.println("Created User: " + user);

@@ -1,6 +1,7 @@
 package org.eduardomango.clasespringsecurity.security.services;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -24,6 +25,8 @@ public class JwtService {
 
     @Value("${jwt.expiration}")
     private Long jwtExpiration;
+    @Value("${jwt.refresh.expiration}")
+    private Long refreshTokenExpiration;
 
     //Extrae el claim del username.
     public String extractUsername(String token) {
@@ -89,6 +92,26 @@ public class JwtService {
     private boolean isTokenExpired(String token) {
         Date expiration = extractClaim(token, Claims::getExpiration);
         return expiration.before(new Date());
+    }
+
+    public String generateRefreshToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("type", "refresh");
+        return buildToken(claims, userDetails, refreshTokenExpiration);
+    }
+    public boolean validateRefreshToken(String refreshToken, UserDetails userDetails) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(getSignInKey())
+                    .build()
+                    .parseClaimsJws(refreshToken);
+
+            final String username = extractUsername(refreshToken);
+            return (username.equals(userDetails.getUsername())) &&
+                    !isTokenExpired(refreshToken);
+        } catch (JwtException e) {
+            return false; // Invalid token
+        }
     }
 
 }
